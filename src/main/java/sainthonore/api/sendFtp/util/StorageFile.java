@@ -37,7 +37,7 @@ public class StorageFile {
 
     public void CreateFile(String body, String fileName) {
 
-        File dir = new File(this.fileStorageLocation.toAbsolutePath() + "/ftpfiles");
+        File dir = new File(this.fileStorageLocation.toAbsolutePath() + "/");
         if (!dir.exists()) {
             dir.setReadable(true, false);
             dir.setExecutable(true, false);
