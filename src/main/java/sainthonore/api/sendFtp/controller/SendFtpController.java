@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import sainthonore.api.sendFtp.model.SellModel;
+import sainthonore.api.sendFtp.repository.ProductRepository;
 import sainthonore.api.sendFtp.repository.SellRepository;
 
 @RestController
@@ -21,11 +22,20 @@ public class SendFtpController {
     @Autowired
     SellRepository sellRepository;
 
+    @Autowired
+    ProductRepository productRepository;
+
     @RequestMapping(value = "sells", method = RequestMethod.GET)
     public String sendSellsFile()
             throws IOException, NoSuchAlgorithmException, NoSuchProviderException, ParseException {
-        List<SellModel> totalSells = sellRepository.getSells();
 
-        return null;
+        return "total records " + sellRepository.getSells();
+    }
+
+    @RequestMapping(value = "products", method = RequestMethod.GET)
+    public String sendProductsFile()
+            throws IOException, NoSuchAlgorithmException, NoSuchProviderException, ParseException {
+
+        return "total records " + productRepository.getProducts();
     }
 }
