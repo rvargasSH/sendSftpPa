@@ -24,32 +24,32 @@ public class ProductRepository {
 
     public String getProducts() throws NoSuchAlgorithmException, NoSuchProviderException, ParseException {
 
-        String sql = "delete [FlutePlayer].[dbo].[tmp_producto_intel_pty]";
+        String sql = "delete [SHCR].[dbo].[tmp_producto_intel_pty];";
         jdbcTemplate.update(sql);
 
-        sql = "insert into  [FlutePlayer].[dbo].[tmp_producto_intel_pty]" + " SELECT distinct T3.Referencia+';'+"
-                + "       T3.Descripcion+';'+" + "       T3.DescDept+';'+" + "       T3.DescSubDep+';'+"
-                + "       T3.Referencia+';'+" + "       T3.StoreCode" + " from [FlutePlayer].[dbo].[transactions] T1, "
-                + "     [FlutePlayer].[dbo].[transactionsdetails] T2," + "     [FlutePlayer].[dbo].[Articulos] T3"
-                + " where T1.Invc_Sid = T2.Invc_Sid and T2.Itemcode = T3.Referencia"
-                + " and T1.Invc_Date >= dateadd(day,-15,GETDATE())";
+        sql = "insert into  [SHCR].[dbo].[tmp_producto_intel_pty]"
+                + " select  distinct convert(nvarchar(20),T3.Articulo)+';'+(select max(x.Descripcion1) from [SHCR].[dbo].[Art] x where x.Articulo =T3.articulo)+';'+"
+                + "           substring(T3.Grupo,1,30)+';'+substring(T3.Familia,1,30)+';'+convert(nvarchar(20),T3.Articulo)+';'+'CR/'+convert(nvarchar(20),T1.Almacen)"
+                + " From     [SHCR].[dbo].[venta] T1" + "         inner join [SHCR].[dbo].[ventad] T2 "
+                + "                    ON T1.ID =T2.ID  " + " and T1.FechaEmision >= dateadd(day,-15,GETDATE()) "
+                + "         inner join [SHCR].[dbo].[Art] T3 " + "                    ON T2.Articulo =T3.Articulo;";
         jdbcTemplate.update(sql);
-        sql = "select  linea from [FlutePlayer].[dbo].[tmp_producto_intel_pty];";
-
-        final List<SellModel> eventosliquidados = new ArrayList<>();
-
+        sql = "select * from [SHCR].[dbo].[tmp_producto_intel_pty];";
         final List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
         String bodyFtpFile = "";
         Integer i = 0;
         for (final Map row : rows) {
             String cadenaTexto = (String) row.get("linea");
-            bodyFtpFile += cadenaTexto.trim() + "\r\n";
-            i++;
+            try {
+                bodyFtpFile += cadenaTexto.trim() + "\r\n";
+                i++;
+            } catch (Exception e) {
 
+            }
         }
         saveFtpFile.CreateFile(bodyFtpFile, "products");
 
-        sql = "delete [FlutePlayer].[dbo].[tmp_producto_intel_pty] where linea is null";
+        sql = "delete [SHCR].[dbo].[tmp_producto_intel_pty] where linea is null";
         jdbcTemplate.update(sql);
         return "total " + i;
     }
