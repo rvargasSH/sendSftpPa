@@ -1,11 +1,11 @@
-package sainthonore.api.sendFtp.repository;
+package sainthonore.api.sendFtpPa.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import sainthonore.api.sendFtp.model.SellModel;
-import sainthonore.api.sendFtp.util.StorageFile;
+import sainthonore.api.sendFtpPa.model.SellModel;
+import sainthonore.api.sendFtpPa.util.StorageFile;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;

@@ -1,4 +1,4 @@
-package sainthonore.api.sendFtp.util.execeptions;
+package sainthonore.api.sendFtpPa.util.execeptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

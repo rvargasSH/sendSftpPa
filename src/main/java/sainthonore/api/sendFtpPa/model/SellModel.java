@@ -1,4 +1,4 @@
-package sainthonore.api.sendFtp.model;
+package sainthonore.api.sendFtpPa.model;
 
 import lombok.Data;
 

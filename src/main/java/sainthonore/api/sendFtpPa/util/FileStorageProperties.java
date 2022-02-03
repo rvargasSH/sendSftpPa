@@ -1,4 +1,4 @@
-package sainthonore.api.sendFtp.util;
+package sainthonore.api.sendFtpPa.util;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

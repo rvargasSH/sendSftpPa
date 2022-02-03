@@ -1,4 +1,4 @@
-package sainthonore.api.sendFtp.util;
+package sainthonore.api.sendFtpPa.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import sainthonore.api.sendFtp.util.execeptions.FileStorageException;
+import sainthonore.api.sendFtpPa.util.execeptions.FileStorageException;
 
 @Service
 public class StorageFile {

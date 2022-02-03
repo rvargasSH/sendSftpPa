@@ -1,10 +1,10 @@
-package sainthonore.api.sendFtp.services;
+package sainthonore.api.sendFtpPa.services;
 
 import org.springframework.stereotype.Service;
 
-import sainthonore.api.sendFtp.util.execeptions.ErrorMessage;
-import sainthonore.api.sendFtp.util.execeptions.FTPErrors;
-import sainthonore.api.sendFtp.util.ftpclient.FTPService;
+import sainthonore.api.sendFtpPa.util.execeptions.ErrorMessage;
+import sainthonore.api.sendFtpPa.util.execeptions.FTPErrors;
+import sainthonore.api.sendFtpPa.util.ftpclient.FTPService;
 
 import org.apache.commons.net.PrintCommandListener;
 import org.apache.commons.net.ftp.FTP;

@@ -1,10 +1,14 @@
-package sainthonore.api.sendFtp.controller;
+package sainthonore.api.sendFtpPa.controller;
 
 import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.text.Format;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,10 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import sainthonore.api.sendFtp.repository.ProductRepository;
-import sainthonore.api.sendFtp.repository.SellRepository;
-import sainthonore.api.sendFtp.util.execeptions.FTPErrors;
-import sainthonore.api.sendFtp.util.ftpclient.FTPService;
+import sainthonore.api.sendFtpPa.repository.ProductRepository;
+import sainthonore.api.sendFtpPa.repository.SellRepository;
+import sainthonore.api.sendFtpPa.util.execeptions.FTPErrors;
+import sainthonore.api.sendFtpPa.util.ftpclient.FTPService;
 
 @RestController
 @RequestMapping("send-ftp")
@@ -45,8 +49,17 @@ public class SendFtpController {
     @RequestMapping(value = "sells", method = RequestMethod.GET)
     public String sendSellsFile()
             throws IOException, NoSuchAlgorithmException, NoSuchProviderException, ParseException {
-        String response = sellRepository.getSells();
-        SendFtpFile("sells.txt");
+        String response = "";
+        List<String> subsidiariesR = sellRepository.getSubsidiaries();
+        Format formatToDate = new SimpleDateFormat("yyMMdd");
+        for (String subsidiary : subsidiariesR) {
+            List<String> storesTypesR = sellRepository.getStoreTypes(subsidiary);
+            for (String storeType : storesTypesR) {
+                response = sellRepository.getSells(subsidiary, storeType);
+                SendFtpFile("sells.txt", "/Panama/Ventas/",
+                        "VENTAS" + formatToDate.format(new Date()) + subsidiary + storeType + ".txt");
+            }
+        }
         return "total records " + response;
     }
 
@@ -54,15 +67,15 @@ public class SendFtpController {
     public String sendProductsFile()
             throws IOException, NoSuchAlgorithmException, NoSuchProviderException, ParseException {
         String response = productRepository.getProducts();
-        SendFtpFile("products.txt");
+        // SendFtpFile("products.txt");
         return "total records " + response;
     }
 
-    public void SendFtpFile(String file) {
+    public void SendFtpFile(String file, String destinyDirectory, String finalName) {
         try {
 
             ftpService.connectToFTP(sftpHost, sftpUser, sftpPass);
-            ftpService.uploadFileToFTP(new File("./ftpfiles/" + file), sftpPath, file);
+            ftpService.uploadFileToFTP(new File("./ftpfiles/" + file), destinyDirectory, finalName);
         } catch (FTPErrors ftpErrors) {
             System.out.println(ftpErrors.getMessage());
         }

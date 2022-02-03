@@ -1,8 +1,8 @@
-package sainthonore.api.sendFtp.util.ftpclient;
+package sainthonore.api.sendFtpPa.util.ftpclient;
 
 import java.io.File;
 
-import sainthonore.api.sendFtp.util.execeptions.FTPErrors;
+import sainthonore.api.sendFtpPa.util.execeptions.FTPErrors;
 
 public interface FTPService {
 

@@ -1,4 +1,4 @@
-package sainthonore.api.sendFtp.util.execeptions;
+package sainthonore.api.sendFtpPa.util.execeptions;
 
 public class ErrorMessage {
     private int errorcode;
