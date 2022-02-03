@@ -12,6 +12,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +25,7 @@ import sainthonore.api.sendFtpPa.util.ftpclient.FTPService;
 
 @RestController
 @RequestMapping("send-ftp")
+@EnableScheduling
 public class SendFtpController {
 
     @Autowired
@@ -46,6 +49,7 @@ public class SendFtpController {
     @Value("${sftp.path}")
     private String sftpPath;
 
+    @Scheduled(cron = "00 05 25 * * *")
     @RequestMapping(value = "sells", method = RequestMethod.GET)
     public String sendSellsFile()
             throws IOException, NoSuchAlgorithmException, NoSuchProviderException, ParseException {
