@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>saint-honore.api</groupId>
-	<artifactId>sendFtp</artifactId>
+	<artifactId>sendFtpPa</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>sendFtp</name>
+	<name>sendFtpPa</name>
 	<description>Api to send files to ftp server</description>
 	<properties>
 		<java.version>1.8</java.version>
