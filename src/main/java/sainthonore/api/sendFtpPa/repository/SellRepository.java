@@ -37,8 +37,7 @@ public class SellRepository {
     public List<String> getStoreTypes(String sbsNo) {
         List<String> storesTypesR = new ArrayList<>();
         String storesTypes = "SELECT i.store_no from invoice i where i.sbs_no=" + sbsNo + ""
-                + " and i.invc_no>0 and  i.created_date between to_date('01/01/2022 00:00:00', 'DD/MM/YYYY HH24:MI:SS')"
-                + " and  to_date('31/01/2022 23:59:59', 'DD/MM/YYYY HH24:MI:SS')"
+                + " and i.invc_no>0 and  i.created_date>=SYSDATE -15"
                 + " group by i.store_no";
         final List<Map<String, Object>> listStores = jdbcTemplate.queryForList(storesTypes);
         for (final Map storeType : listStores) {
@@ -76,8 +75,7 @@ public class SellRepository {
                 + " where i.sbs_no=" + sbsNo + ""
                 + " and i.store_no=" + store_no + ""
                 + " and i.invc_no>0"
-                + " and  i.created_date between to_date('01/01/2022 00:00:00', 'DD/MM/YYYY HH24:MI:SS')"
-                + " and  to_date('31/01/2022 23:59:59', 'DD/MM/YYYY HH24:MI:SS')"
+                + " and  i.created_date>=SYSDATE -15"
                 + " group by i.invc_sid, i.created_date, s.store_name,  c.first_name, c.last_name, c.cust_id,"
                 + " sb.sbs_no, s.SBS_NO||''||s.STORE_NO||''||s.STORE_CODE, cc.country_name, t7.RPRO_FULL_NAME,"
                 + " t6.description1,i.store_no"
