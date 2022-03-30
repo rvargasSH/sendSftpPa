@@ -49,7 +49,7 @@ public class SendFtpController {
     @Value("${sftp.path}")
     private String sftpPath;
 
-    @Scheduled(cron = "00 15 05 * * *")
+    @Scheduled(cron = "00 0/20 * * * *")
     @RequestMapping(value = "sells", method = RequestMethod.GET)
     public String sendSellsFile()
             throws IOException, NoSuchAlgorithmException, NoSuchProviderException, ParseException {
