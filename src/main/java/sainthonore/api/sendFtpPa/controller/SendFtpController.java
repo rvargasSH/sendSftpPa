@@ -53,17 +53,13 @@ public class SendFtpController {
     @RequestMapping(value = "sells", method = RequestMethod.GET)
     public String sendSellsFile()
             throws IOException, NoSuchAlgorithmException, NoSuchProviderException, ParseException {
+
         String response = "";
-        List<String> subsidiariesR = sellRepository.getSubsidiaries();
         Format formatToDate = new SimpleDateFormat("yyMMdd");
-        for (String subsidiary : subsidiariesR) {
-            List<String> storesTypesR = sellRepository.getStoreTypes(subsidiary);
-            for (String storeType : storesTypesR) {
-                response = sellRepository.getSells(subsidiary, storeType);
-                SendFtpFile("sells.txt", "/Panama/Ventas/",
-                        "VENTAS" + formatToDate.format(new Date()) + subsidiary + storeType + ".txt");
-            }
-        }
+        response = sellRepository.getSells();
+        System.out.println("here is sending");
+        SendFtpFile("sells.txt", "/Panama/Ventas/",
+                "VENTAS" + formatToDate.format(new Date()) + ".txt");
         return "total records " + response;
     }
 

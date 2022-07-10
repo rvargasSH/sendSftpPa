@@ -47,22 +47,19 @@ public class SellRepository {
         return storesTypesR;
     }
 
-    public String getSells(String sbsNo, String store_no)
+    public String getSells()
             throws NoSuchAlgorithmException, NoSuchProviderException, ParseException {
-        String sells = "select s.SBS_NO||''||s.STORE_NO||''||s.STORE_CODE||';'|| i.invc_sid ||';'||"
-                + " TO_CHAR(sum(case when i.invc_type=0 then (ii.qty*ii.price)"
-                + " when i.invc_type=2 then (ii.qty*ii.price)*-1 end ),'FM999G999G999G990D00','nls_numeric_characters=,.')||';'||"
+        String sells = "select s.SBS_NO||''||s.STORE_NO||''||s.STORE_CODE AS sbs_no_local, i.invc_sid AS numero_boleta,"
+                + " sum(case when i.invc_type=0 then (ii.qty*ii.price)"
+                + " when i.invc_type=2 then (ii.qty*ii.price)*-1 end ) AS monto,"
+                + " TO_CHAR(i.created_date,'DD-MM-YYYY HH24:MI:SS') AS fecha,"
+                + " i.WORKSTATION as identificador_caja,"
+                + " t7.empl_id AS identificador_vendedor,"
+                + "  t6.description1 AS identificador_producto,"
                 + " sum(case when i.invc_type=0 then ii.qty"
-                + " when i.invc_type=2 then ii.qty*-1 end )||';'||"
-                + " TO_CHAR(i.created_date,'DD-MM-YYYY HH24:MI:SS')||';'||0||';'||"
-                + " t7.RPRO_FULL_NAME||';'||"
-                + " t6.description1||';'||"
-                + " min(case when i.invc_type=0 then '1' when i.invc_type=2 then '-1' end)||';'||"
-                + " TO_CHAR(sum(case when i.invc_type=0 then (ii.qty*ii.price)"
-                + " when i.invc_type=2 then (ii.qty*ii.price)*-1 end ),'FM999G999G999G990D00','nls_numeric_characters=,.')||';'||"
-                + " sum(case when i.invc_type=0 then ii.qty"
-                + " when i.invc_type=2 then ii.qty*-1 end )||';'||"
-                + " min(case when i.invc_type=0 then 'Regular' when i.invc_type=2 then 'Return' end) movimiento"
+                + " when i.invc_type=2 then ii.qty*-1 end ) AS cantidad_de_productos_vendidos,"
+                + " min(case when i.invc_type=0 then 'Regular' when i.invc_type=2 then 'Return' end) movimiento,"
+                + " t7.RPRO_FULL_NAME"
                 + " from invoice i"
                 + " inner join invc_item ii on i.invc_sid=ii.invc_sid"
                 + " inner join invn_sbs t6 on ii.item_sid = t6.item_sid and t6.sbs_no=i.sbs_no"
@@ -72,23 +69,38 @@ public class SellRepository {
                 + " left join cust_address ca on (ca.cust_sid=c.cust_sid and ca.addr_no=1 and c.cust_type=0)"
                 + " left join country cc on (cc.country_id=ca.country_id)"
                 + " inner join subsidiary sb on (sb.sbs_no=i.sbs_no)"
-                + " where i.sbs_no=" + sbsNo + ""
-                + " and i.store_no=" + store_no + ""
-                + " and i.invc_no>0"
+                + " where i.invc_no>0"
                 + " and  i.created_date>=SYSDATE -15"
-                + " group by i.invc_sid, i.created_date, s.store_name,  c.first_name, c.last_name, c.cust_id,"
+                + " group by i.invc_sid, i.created_date, "
                 + " sb.sbs_no, s.SBS_NO||''||s.STORE_NO||''||s.STORE_CODE, cc.country_name, t7.RPRO_FULL_NAME,"
-                + " t6.description1,i.store_no"
+                + " t6.description1,i.WORKSTATION,t7.empl_id "
                 + " order by i.created_date";
+
         final List<Map<String, Object>> sellsList = jdbcTemplate.queryForList(sells);
         String bodyFtpFile = "";
         Integer i = 0;
+        String firstLine = "sbs_no_local;numero_boleta;monto;fecha;identificador_caja;identificador_vendedor;identificador_producto;cantidad_de_productos_vendidos;precio_producto_vendido;codigo_transaccion;nombre_vendedor\r\n";
+        bodyFtpFile += firstLine;
         for (final Map sell : sellsList) {
-            String cadenaTexto = (String) sell.get("movimiento");
-            bodyFtpFile += cadenaTexto.trim() + "\r\n";
+            String CODIGO = (String) sell.get("sbs_no_local");
+            String invc_sid = sell.get("numero_boleta").toString();
+            BigDecimal VentaTotalSole = (BigDecimal) sell.get("monto");
+            String CREATEDAT = (String) sell.get("fecha");
+            BigDecimal workstation = (BigDecimal) sell.get("identificador_caja");
+            BigDecimal empl_id = (BigDecimal) sell.get("identificador_vendedor");
+            String ITEM_SID = sell.get("identificador_producto").toString();
+            BigDecimal Qty = (BigDecimal) sell.get("cantidad_de_productos_vendidos");
+            String movimiento = (String) sell.get("movimiento");
+            String vendedor = (String) sell.get("RPRO_FULL_NAME");
+            Float individualSell = Float.parseFloat(VentaTotalSole.toString()) / Float.parseFloat(Qty.toString());
+            String line = CODIGO + ";" + invc_sid + ";" + individualSell +
+                    ";" + CREATEDAT + ";"
+                    + workstation + ";" + empl_id + ";" + ITEM_SID + ";" + Qty + ";" +
+                    individualSell + ";"
+                    + movimiento + ";" + vendedor;
+            bodyFtpFile += line.trim() + "\r\n";
             i++;
         }
-        System.out.println("file sells" + sbsNo + "-" + store_no);
         saveFtpFile.CreateFile(bodyFtpFile, "sells");
         return "total " + i;
 
