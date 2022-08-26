@@ -101,7 +101,7 @@ public class SellRepository {
             bodyFtpFile += line.trim() + "\r\n";
             i++;
         }
-        saveFtpFile.CreateFile(bodyFtpFile, "sells");
+        saveFtpFile.createFileWithUtf8(bodyFtpFile, "sells");
         return "total " + i;
 
     }

@@ -15,6 +15,10 @@ import java.text.SimpleDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import java.nio.charset.StandardCharsets;
+import java.io.OutputStreamWriter;
+
+import java.io.BufferedWriter;
 
 import sainthonore.api.sendFtpPa.util.execeptions.FileStorageException;
 
@@ -54,6 +58,29 @@ public class StorageFile {
         } catch (IOException ex) {
             System.out.println("error " + ex.getMessage());
         }
+    }
+
+    public void createFileWithUtf8(String fileName, String body) {
+
+        File dir = new File(this.fileStorageLocation.toAbsolutePath() + "/");
+        if (!dir.exists()) {
+            dir.setReadable(true, false);
+            dir.setExecutable(true, false);
+            dir.setWritable(true, false);
+            dir.mkdirs();
+        }
+        fileName = dir.getAbsolutePath() + "/" + fileName + ".txt";
+
+        try (FileOutputStream fos = new FileOutputStream(fileName);
+                OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+                BufferedWriter writer = new BufferedWriter(osw)) {
+
+            writer.append(body);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void CreateFileWithName(String body, String fileName) {
