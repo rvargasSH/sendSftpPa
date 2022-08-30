@@ -101,7 +101,7 @@ public class SellRepository {
             bodyFtpFile += line.trim() + "\r\n";
             i++;
         }
-        saveFtpFile.createFileWithUtf8(bodyFtpFile, "sells");
+        saveFtpFile.createFileWithUtf8("sells", bodyFtpFile);
         return "total " + i;
 
     }
