@@ -59,7 +59,7 @@ public class SendFtpController {
         response = sellRepository.getSells();
         System.out.println("here is sending");
         SendFtpFile("sells.txt", "/Panama/Ventas/",
-                "VENTAS" + formatToDate.format(new Date()) + ".txt");
+                "VENTAS" + formatToDate.format(new Date()) + "PA.txt");
         return "total records " + response;
     }
 
