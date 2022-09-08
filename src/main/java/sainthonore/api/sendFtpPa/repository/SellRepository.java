@@ -54,7 +54,7 @@ public class SellRepository {
                 + " when i.invc_type=2 then (ii.qty*ii.price)*-1 end ) AS monto,"
                 + " TO_CHAR(i.created_date,'DD-MM-YYYY HH24:MI:SS') AS fecha,"
                 + " i.WORKSTATION as identificador_caja,"
-                + " t7.empl_id AS identificador_vendedor,"
+                + " 'PA'||t7.empl_id AS identificador_vendedor,"
                 + "  t6.description1 AS identificador_producto,"
                 + " sum(case when i.invc_type=0 then ii.qty"
                 + " when i.invc_type=2 then ii.qty*-1 end ) AS cantidad_de_productos_vendidos,"
@@ -70,7 +70,7 @@ public class SellRepository {
                 + " left join country cc on (cc.country_id=ca.country_id)"
                 + " inner join subsidiary sb on (sb.sbs_no=i.sbs_no)"
                 + " where i.invc_no>0"
-                + " and  i.created_date>=SYSDATE -15"
+                + " and i.created_date>=SYSDATE -15"
                 + " group by i.invc_sid, i.created_date, "
                 + " sb.sbs_no, s.SBS_NO||''||s.STORE_NO||''||s.STORE_CODE, cc.country_name, t7.RPRO_FULL_NAME,"
                 + " t6.description1,i.WORKSTATION,t7.empl_id "
@@ -87,7 +87,7 @@ public class SellRepository {
             BigDecimal VentaTotalSole = (BigDecimal) sell.get("monto");
             String CREATEDAT = (String) sell.get("fecha");
             BigDecimal workstation = (BigDecimal) sell.get("identificador_caja");
-            BigDecimal empl_id = (BigDecimal) sell.get("identificador_vendedor");
+            String empl_id = (String) sell.get("identificador_vendedor");
             String ITEM_SID = sell.get("identificador_producto").toString();
             BigDecimal Qty = (BigDecimal) sell.get("cantidad_de_productos_vendidos");
             String movimiento = (String) sell.get("movimiento");
