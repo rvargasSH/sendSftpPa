@@ -58,7 +58,7 @@ public class SendFtpController {
         Format formatToDate = new SimpleDateFormat("yyMMdd");
         response = sellRepository.getSells();
         System.out.println("here is sending");
-        SendFtpFile("sells.txt", "/Panama/Ventas/",
+        SendFtpFile("sells.txt", "/upload/",
                 "VENTAS" + formatToDate.format(new Date()) + "PA.txt");
         return "total records " + response;
     }
