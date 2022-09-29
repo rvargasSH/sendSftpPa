@@ -11,6 +11,7 @@
 	<groupId>saint-honore.api</groupId>
 	<artifactId>sendFtpPa</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
 	<name>sendFtpPa</name>
 	<description>Api to send files to ftp server</description>
 	<properties>
