@@ -10,6 +10,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -49,6 +51,8 @@ public class SendFtpController {
     @Value("${sftp.path}")
     private String sftpPath;
 
+    public final static Logger LOGGER = LoggerFactory.getLogger(SendFtpController.class);
+
     @Scheduled(cron = "00 0/20 * * * *")
     @RequestMapping(value = "sells", method = RequestMethod.GET)
     public String sendSellsFile()
@@ -60,6 +64,7 @@ public class SendFtpController {
         System.out.println("here is sending");
         SendFtpFile("sells.txt", "/upload/",
                 "VENTAS" + formatToDate.format(new Date()) + "PA.txt");
+        LOGGER.info("filesend-totalrecords" + response);
         return "total records " + response;
     }
 

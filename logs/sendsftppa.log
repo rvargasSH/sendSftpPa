@@ -1,0 +1,8 @@
+2022-09-29 09:35:29,856 INFO [main] org.springframework.boot.StartupInfoLogger : Starting SendFtpApplicationTests using Java 18.0.1.1 on SHCO-17 with PID 23036 (started by vargas.reynaldo in C:\Users\Vargas.Reynaldo\Documents\proyectos\sendSftpPa)
+2022-09-29 09:35:29,856 DEBUG [main] org.springframework.boot.StartupInfoLogger : Running with Spring Boot v2.5.3, Spring v5.3.9
+2022-09-29 09:35:29,858 INFO [main] org.springframework.boot.SpringApplication : No active profile set, falling back to default profiles: default
+2022-09-29 09:35:31,639 INFO [main] org.springframework.boot.StartupInfoLogger : Started SendFtpApplicationTests in 2.13 seconds (JVM running for 2.953)
+2022-09-29 09:35:38,711 INFO [restartedMain] org.springframework.boot.StartupInfoLogger : Starting SendFtpApplication using Java 18.0.1.1 on SHCO-17 with PID 8972 (C:\Users\Vargas.Reynaldo\Documents\proyectos\sendSftpPa\target\classes started by vargas.reynaldo in C:\Users\Vargas.Reynaldo\Documents\proyectos\sendSftpPa)
+2022-09-29 09:35:38,715 DEBUG [restartedMain] org.springframework.boot.StartupInfoLogger : Running with Spring Boot v2.5.3, Spring v5.3.9
+2022-09-29 09:35:38,715 INFO [restartedMain] org.springframework.boot.SpringApplication : No active profile set, falling back to default profiles: default
+2022-09-29 09:35:40,690 INFO [restartedMain] org.springframework.boot.StartupInfoLogger : Started SendFtpApplication in 2.633 seconds (JVM running for 3.121)
