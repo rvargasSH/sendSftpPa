@@ -1,5 +1,7 @@
 package sainthonore.api.sendFtpPa.repository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -7,7 +9,12 @@ import org.springframework.stereotype.Service;
 import sainthonore.api.sendFtpPa.model.SellModel;
 import sainthonore.api.sendFtpPa.util.StorageFile;
 
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.util.List;
@@ -22,6 +29,8 @@ public class SellRepository {
 
     @Autowired
     StorageFile saveFtpFile;
+
+    public final static Logger LOGGER = LoggerFactory.getLogger(SellRepository.class);
 
     public List<String> getSubsidiaries() {
         List<String> subsidiariesR = new ArrayList<>();
@@ -81,27 +90,38 @@ public class SellRepository {
         Integer i = 0;
         String firstLine = "sbs_no_local;numero_boleta;monto;fecha;identificador_caja;identificador_vendedor;identificador_producto;cantidad_de_productos_vendidos;precio_producto_vendido;codigo_transaccion;nombre_vendedor\r\n";
         bodyFtpFile += firstLine;
-        for (final Map sell : sellsList) {
-            String CODIGO = (String) sell.get("sbs_no_local");
-            String invc_sid = sell.get("numero_boleta").toString();
-            BigDecimal VentaTotalSole = (BigDecimal) sell.get("monto");
-            String CREATEDAT = (String) sell.get("fecha");
-            BigDecimal workstation = (BigDecimal) sell.get("identificador_caja");
-            String empl_id = (String) sell.get("identificador_vendedor");
-            String ITEM_SID = sell.get("identificador_producto").toString();
-            BigDecimal Qty = (BigDecimal) sell.get("cantidad_de_productos_vendidos");
-            String movimiento = (String) sell.get("movimiento");
-            String vendedor = (String) sell.get("RPRO_FULL_NAME");
-            Float individualSell = Float.parseFloat(VentaTotalSole.toString()) / Float.parseFloat(Qty.toString());
-            String line = CODIGO + ";" + invc_sid + ";" + individualSell +
-                    ";" + CREATEDAT + ";"
-                    + workstation + ";" + empl_id + ";" + ITEM_SID + ";" + Qty + ";" +
-                    individualSell + ";"
-                    + movimiento + ";" + vendedor;
-            bodyFtpFile += line.trim() + "\r\n";
-            i++;
+        LOGGER.info("result from query" + sellsList.size());
+        String fileName = saveFtpFile.createFileWithUtf8("sells-panama");
+        try (FileOutputStream fos = new FileOutputStream(fileName);
+                OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+                BufferedWriter writer = new BufferedWriter(osw)) {
+
+            writer.append(bodyFtpFile);
+            for (final Map sell : sellsList) {
+                String CODIGO = (String) sell.get("sbs_no_local");
+                String invc_sid = sell.get("numero_boleta").toString();
+                BigDecimal VentaTotalSole = (BigDecimal) sell.get("monto");
+                String CREATEDAT = (String) sell.get("fecha");
+                BigDecimal workstation = (BigDecimal) sell.get("identificador_caja");
+                String empl_id = (String) sell.get("identificador_vendedor");
+                String ITEM_SID = sell.get("identificador_producto").toString();
+                BigDecimal Qty = (BigDecimal) sell.get("cantidad_de_productos_vendidos");
+                String movimiento = (String) sell.get("movimiento");
+                String vendedor = (String) sell.get("RPRO_FULL_NAME");
+                Float individualSell = Float.parseFloat(VentaTotalSole.toString()) / Float.parseFloat(Qty.toString());
+                String line = CODIGO + ";" + invc_sid + ";" + individualSell +
+                        ";" + CREATEDAT + ";"
+                        + workstation + ";" + empl_id + ";" + ITEM_SID + ";" + Qty + ";" +
+                        individualSell + ";"
+                        + movimiento + ";" + vendedor;
+                writer.append(line.trim() + "\r\n");
+                i++;
+            }
+            writer.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        saveFtpFile.createFileWithUtf8("sells", bodyFtpFile);
         return "total " + i;
 
     }

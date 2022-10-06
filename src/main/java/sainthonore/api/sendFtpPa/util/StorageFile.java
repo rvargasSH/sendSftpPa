@@ -60,7 +60,7 @@ public class StorageFile {
         }
     }
 
-    public void createFileWithUtf8(String fileName, String body) {
+    public String createFileWithUtf8(String fileName) {
 
         File dir = new File(this.fileStorageLocation.toAbsolutePath() + "/");
         if (!dir.exists()) {
@@ -69,17 +69,7 @@ public class StorageFile {
             dir.setWritable(true, false);
             dir.mkdirs();
         }
-        fileName = dir.getAbsolutePath() + "/" + fileName + ".txt";
-
-        try (FileOutputStream fos = new FileOutputStream(fileName);
-                OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
-                BufferedWriter writer = new BufferedWriter(osw)) {
-
-            writer.append(body);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        return fileName = dir.getAbsolutePath() + "/" + fileName + ".txt";
 
     }
 
