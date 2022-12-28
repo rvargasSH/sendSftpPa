@@ -126,4 +126,44 @@ public class SellRepository {
 
     }
 
+    public List<Map<String, Object>> getServicesSells()
+            throws NoSuchAlgorithmException, NoSuchProviderException, ParseException {
+        String sells = "select s.SBS_NO||''||s.STORE_NO||''||s.STORE_CODE AS storeCode, i.invc_sid AS Idtransaction ,s.STORE_NAME,"
+                + " TO_CHAR(sum(case when i.invc_type=0 then (ii.qty*ii.price)"
+                + " when i.invc_type=2 then (ii.qty*ii.price)*-1 end ),'FM999G999G999G990D00','nls_numeric_characters=,.') AS price,"
+                + " sum(case when i.invc_type=0 then ii.qty"
+                + " when i.invc_type=2 then ii.qty*-1 end ) AS quantity,"
+                + " TO_CHAR(i.created_date,'DD-MM-YYYY HH24:MI:SS') AS sellDate,"
+                + " t7.RPRO_FULL_NAME AS seller,"
+                + " t6.description1 AS productCode,"
+                + " t6.description2 AS productName,"
+                + " t6.description3 AS brand,"
+                + " t6.attr AS family,"
+                + " t6.siz AS productGroup"
+                + " from invoice i"
+                + " inner join invc_item ii on i.invc_sid=ii.invc_sid"
+                + " inner join invn_sbs t6 on ii.item_sid = t6.item_sid and t6.sbs_no=i.sbs_no"
+                + " inner join employee t7 on ii.clerk_id = t7.empl_id and t7.sbs_no=i.sbs_no"
+                + " inner join store s on (s.store_no=i.store_no and s.sbs_no=i.sbs_no)"
+                + " left join customer c on (c.cust_sid=i.cust_sid)"
+                + " left join cust_address ca on (ca.cust_sid=c.cust_sid and ca.addr_no=1 and c.cust_type=0)"
+                + " left join country cc on (cc.country_id=ca.country_id)"
+                + " inner join subsidiary sb on (sb.sbs_no=i.sbs_no)"
+                + " where i.invc_no>0"
+                + " AND i.created_date>=SYSDATE -180"
+                + " AND i.INVC_SID in(SELECT i.invc_sid from invoice i inner join invc_item ii on i.invc_sid=ii.invc_sid"
+                + "                    inner join invn_sbs t6 on ii.item_sid = t6.item_sid and t6.sbs_no=i.sbs_no "
+                + "                    where i.invc_no>0 AND i.created_date>=TO_DATE('2022-01-01','yyyy-mm-dd') "
+                + "                    AND t6.description1 IN('SERVICE30','SERVICE60','LESSON30','LESSON60')"
+                + "                    group by i.invc_sid)"
+                + " group by i.invc_sid, i.created_date, s.store_name,  c.first_name, c.last_name, c.cust_id,"
+                + " sb.sbs_no, s.SBS_NO||''||s.STORE_NO||''||s.STORE_CODE, cc.country_name, t7.RPRO_FULL_NAME,"
+                + " t6.description1,i.store_no,description2,description3,attr,siz"
+                + " order by i.created_date";
+
+        final List<Map<String, Object>> sellsList = jdbcTemplate.queryForList(sells);
+        return sellsList;
+
+    }
+
 }

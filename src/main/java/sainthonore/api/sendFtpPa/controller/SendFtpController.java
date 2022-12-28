@@ -7,8 +7,12 @@ import java.security.NoSuchProviderException;
 import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
+import javax.mail.MessagingException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,12 +26,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import sainthonore.api.sendFtpPa.repository.ProductRepository;
 import sainthonore.api.sendFtpPa.repository.SellRepository;
+import sainthonore.api.sendFtpPa.util.CreateExcel;
+import sainthonore.api.sendFtpPa.util.MailBody;
+import sainthonore.api.sendFtpPa.util.SendMail;
 import sainthonore.api.sendFtpPa.util.execeptions.FTPErrors;
 import sainthonore.api.sendFtpPa.util.ftpclient.FTPService;
 
 @RestController
 @RequestMapping("send-ftp")
-@EnableScheduling
+// @EnableScheduling
 public class SendFtpController {
 
     @Autowired
@@ -37,7 +44,16 @@ public class SendFtpController {
     ProductRepository productRepository;
 
     @Autowired
+    CreateExcel createExcel;
+
+    @Autowired
+    SendMail sendMail;
+
+    @Autowired
     private FTPService ftpService;
+
+    @Autowired
+    MailBody mailbody;
 
     @Value("${sftp.host}")
     private String sftpHost;
@@ -87,4 +103,21 @@ public class SendFtpController {
         }
 
     }
+
+    @Scheduled(cron = "00 00 04 /15 * *")
+    @RequestMapping(value = "services-sells", method = RequestMethod.GET)
+    public String sendServicesSellsByMail()
+            throws IOException, NoSuchAlgorithmException, NoSuchProviderException, ParseException, MessagingException {
+
+        List<Map<String, Object>> data = sellRepository.getServicesSells();
+        String filetosend = createExcel.generateSellsExport(data);
+        String mailBody = mailbody.sellServiceMessage();
+        String[] mailAddress = new String[2];
+        mailAddress[0] = "ana.chang@sthonore.com.pa";
+        mailAddress[1] = "vargas.reynaldo@sthonore.com.co";
+        sendMail.singleAddressWithAttach(mailAddress, "Service sells", mailBody, filetosend);
+
+        return "ok";
+    }
+
 }
