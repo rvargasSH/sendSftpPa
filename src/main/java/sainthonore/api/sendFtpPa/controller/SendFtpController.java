@@ -112,10 +112,9 @@ public class SendFtpController {
         List<Map<String, Object>> data = sellRepository.getServicesSells();
         String filetosend = createExcel.generateSellsExport(data);
         String mailBody = mailbody.sellServiceMessage();
-        String[] mailAddress = new String[3];
+        String[] mailAddress = new String[2];
         mailAddress[0] = "ana.chang@sthonore.com.pa";
         mailAddress[1] = "vargas.reynaldo@sthonore.com.co";
-        mailAddress[1] = "rvargasgaitan90@gmail.com";
         sendMail.singleAddressWithAttach(mailAddress, "Service sells", mailBody, filetosend);
 
         return "ok";
