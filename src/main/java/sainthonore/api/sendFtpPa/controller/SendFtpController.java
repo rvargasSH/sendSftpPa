@@ -104,7 +104,7 @@ public class SendFtpController {
 
     }
 
-    @Scheduled(cron = "00 00 04 /15 * *")
+    @Scheduled(cron = "00 00 04 /16 * *")
     @RequestMapping(value = "services-sells", method = RequestMethod.GET)
     public String sendServicesSellsByMail()
             throws IOException, NoSuchAlgorithmException, NoSuchProviderException, ParseException, MessagingException {
