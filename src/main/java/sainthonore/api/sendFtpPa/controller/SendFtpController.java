@@ -34,7 +34,7 @@ import sainthonore.api.sendFtpPa.util.ftpclient.FTPService;
 
 @RestController
 @RequestMapping("send-ftp")
-// @EnableScheduling
+@EnableScheduling
 public class SendFtpController {
 
     @Autowired
@@ -104,7 +104,7 @@ public class SendFtpController {
 
     }
 
-    @Scheduled(cron = "00 00 04 /16 * *")
+    @Scheduled(cron = "00 00 04 01 * *")
     @RequestMapping(value = "services-sells", method = RequestMethod.GET)
     public String sendServicesSellsByMail()
             throws IOException, NoSuchAlgorithmException, NoSuchProviderException, ParseException, MessagingException {

@@ -150,7 +150,7 @@ public class SellRepository {
                 + " left join country cc on (cc.country_id=ca.country_id)"
                 + " inner join subsidiary sb on (sb.sbs_no=i.sbs_no)"
                 + " where i.invc_no>0"
-                + " AND i.created_date>=SYSDATE -15"
+                + " AND i.created_date>=SYSDATE -30"
                 + " AND i.INVC_SID in(SELECT i.invc_sid from invoice i inner join invc_item ii on i.invc_sid=ii.invc_sid"
                 + "                    inner join invn_sbs t6 on ii.item_sid = t6.item_sid and t6.sbs_no=i.sbs_no "
                 + "                    where i.invc_no>0 AND i.created_date>=TO_DATE('2022-01-01','yyyy-mm-dd') "
