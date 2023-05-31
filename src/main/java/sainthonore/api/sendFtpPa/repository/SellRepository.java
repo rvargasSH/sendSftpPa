@@ -133,7 +133,7 @@ public class SellRepository {
                 + " when i.invc_type=2 then (ii.qty*ii.price)*-1 end ),'FM999G999G999G990D00','nls_numeric_characters=,.') AS price,"
                 + " sum(case when i.invc_type=0 then ii.qty"
                 + " when i.invc_type=2 then ii.qty*-1 end ) AS quantity,"
-                + " TO_CHAR(i.created_date,'DD-MM-YYYY HH24:MI:SS') AS sellDate,"
+                + " TO_CHAR(i.created_date,'YYYY-MM-DD') AS sellDate,"
                 + " t7.RPRO_FULL_NAME AS seller,"
                 + " t6.description1 AS productCode,"
                 + " t6.description2 AS productName,"
