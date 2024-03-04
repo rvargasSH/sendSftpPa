@@ -105,21 +105,4 @@ public class SendFtpController {
 
     }
 
-    @Scheduled(cron = "00 00 04 01 * *")
-    @RequestMapping(value = "services-sells", method = RequestMethod.GET)
-    public String sendServicesSellsByMail()
-            throws IOException, NoSuchAlgorithmException, NoSuchProviderException, ParseException {
-
-        List<Map<String, Object>> data = sellRepository.getServicesSells();
-        String filetosend = createExcel.generateSellsExport(data);
-        String mailBody = mailbody.sellServiceMessage();
-        List<String> mailAdress = new ArrayList<>();
-        mailAdress.add("ana.chang@sthonore.com.pa");
-        mailAdress.add("rvargasgaitan90@gmail.com");
-        mailAdress.add("vargas.reynaldo@sthonore.com.co");
-        sendMail.sendMailBySendingBlue(mailAdress, mailBody, "Service sells", filetosend);
-
-        return "ok";
-    }
-
 }
